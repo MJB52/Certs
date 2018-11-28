@@ -7,56 +7,94 @@ namespace Certs
 {
     interface IRSA
     {
-        string GeneratePandQ();
-        BigInteger GenerateN();
+        RSAData StrategyPattern();
+        void GenerateP();
+        void GenerateQ();
+        void GenerateN();
         void GenerateNTotient();
-        BigInteger GenerateE();
-        BigInteger GenerateD();
+        void GenerateDAndE();
     }
     class RSA : IRSA
     {
+        RandomBigPrimes Primes = new RandomBigPrimes();
+        RSAData nums = new RSAData();
         public void GenerateNTotient()
         {
-            throw new NotImplementedException();
+            nums.NTosh = BigInteger.Multiply(BigInteger.Subtract(nums.P,1), BigInteger.Subtract(nums.Q, 1));
         }
 
-        public string GeneratePandQ()
+        public void GenerateP()
         {
-            return "";
+            nums.P = GetBigInteger();
+        }
+        public void GenerateQ()
+        {
+            nums.Q = GetBigInteger();
+        }
+        public void GenerateDAndE()
+        {
+            nums.E = GetBigInteger();
+            nums.D = ModInverse(nums.E, nums.NTosh);
+            while (!CheckRelativePrimality(nums.E, nums.D))
+            {
+                nums.E = GetBigInteger();
+                nums.D = ModInverse(nums.E, nums.NTosh);
+            }
         }
 
-        public BigInteger GenerateD()
+        public void GenerateN()
         {
-            throw new NotImplementedException();
+            nums.N = BigInteger.Multiply(nums.P, nums.Q);
         }
-
-        public BigInteger GenerateE()
+        private bool CheckRelativePrimality(BigInteger num, BigInteger num2)
         {
-            throw new NotImplementedException();
-        }
-
-        public BigInteger GenerateN()
-        {
-            throw new NotImplementedException();
-        }
-        private bool CheckPrimality(BigInteger num)
-        {
-            for (int i = 0; i < num; i++)
-                if (num % i == 0)
-                    return false;
+            if (BigInteger.Remainder(num2, num) == 0 || BigInteger.Remainder(num, num2) == 0)
+                return false;
             return true;
         }
         private BigInteger GetBigInteger()
         {
-
+            return Primes.GetRandomPrime();
+        }
+        private BigInteger ModInverse(BigInteger a, BigInteger n)
+        {
+            BigInteger result;
+            BigInteger k = 1;
+            BigInteger temp, temp1;
+            while (true)
+            {
+                temp = BigInteger.Multiply(k, n);
+                temp1 = BigInteger.Add(1, temp);
+                result = BigInteger.Divide(temp1, a);
+                if (BigInteger.Remainder(result, 1) == 0) //integer
+                {
+                    return result;
+                }
+                else
+                {
+                    k++;
+                }
+            }
+        }
+        public RSAData StrategyPattern()
+        {
+            GenerateP();
+            GenerateQ();
+            GenerateN();
+            GenerateNTotient();
+            GenerateDAndE();
+            return nums;
         }
     }
 
 
     class RSAData
     {
-        BigInteger N { get; set; }
-        BigInteger E { get; set; }
-        BigInteger D { get; set; }
+        public BigInteger N { get; set; }
+        public BigInteger E { get; set; }
+        public BigInteger D { get; set; }
+        public BigInteger NTosh { get; set; }
+        public BigInteger P { get; set; }
+        public BigInteger Q { get; set; }
     }
 }
