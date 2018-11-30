@@ -28,7 +28,7 @@ namespace Certs
                     315313,  315349,  315361,  315373,  315377,  315389,  315407,  315409,  315421,  315437
         };
 
-        public BigInteger GetRandomPrime()
+        public long GetRandomPrime()
         {
             Random num = new Random();
             return PrimeList[num.Next(0, PrimeList.Count)];

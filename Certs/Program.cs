@@ -9,12 +9,11 @@ namespace Certs
         {
             IGenerateRSAData genCert = new GenerateRSAData();
             var data = genCert.StrategyPattern();
-            Console.WriteLine("e: "+data.E);
-            Console.WriteLine("d: "+data.D);
-            Console.WriteLine("n: "+data.N);
-            Console.WriteLine("nt: "+data.NTosh);
-            Console.WriteLine("p: "+data.P);
-            Console.WriteLine("q: "+data.Q);
+            IRSA rsa = new RSA();
+            var e = rsa.Encrypt("HiIamMike", data.E, data.N); // doesnt work right now idfk
+            Console.WriteLine(e.ToString());
+            var d = rsa.Decrypt(e, data.D, data.N);
+            Console.WriteLine(d);
         }
     }
 }

@@ -34,11 +34,11 @@ namespace Certs
         public void GenerateDAndE()
         {
             nums.E = GetBigInteger();
-            nums.D = ModInverse(nums.E, nums.NTosh);
+            nums.D = (long)ModInverse(nums.E, nums.NTosh);
             while (!CheckRelativePrimality(nums.E, nums.D))
             {
                 nums.E = GetBigInteger();
-                nums.D = ModInverse(nums.E, nums.NTosh);
+                nums.D =(long) ModInverse(nums.E, nums.NTosh);
             }
         }
 
@@ -52,7 +52,7 @@ namespace Certs
                 return false;
             return true;
         }
-        private BigInteger GetBigInteger()
+        private long GetBigInteger()
         {
             return Primes.GetRandomPrime();
         }
@@ -91,10 +91,10 @@ namespace Certs
     class RSAData
     {
         public BigInteger N { get; set; }
-        public BigInteger E { get; set; }
-        public BigInteger D { get; set; }
+        public long E { get; set; }
+        public long D { get; set; }
         public BigInteger NTosh { get; set; }
-        public BigInteger P { get; set; }
-        public BigInteger Q { get; set; }
+        public long P { get; set; }
+        public long Q { get; set; }
     }
 }

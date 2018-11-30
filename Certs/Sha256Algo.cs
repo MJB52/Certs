@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Certs
 {
-    class Sha256Algo
+    static class Sha256Algo
     {
-        public string Hash(string plaintext)
+        public static string Hash(string plaintext)
         {
-
+            return "";
         }
     }
 }

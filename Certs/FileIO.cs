@@ -10,9 +10,13 @@ namespace Certs
         {
 
         }
-        public IEnumerable<string> ReadFromDir(string name)
+        public void WriteToDir(string name, string data)
         {
 
+        }
+        public object ReadFromDir(string name)
+        {
+            return new object();
         }
     }
 }
