@@ -7,7 +7,7 @@ namespace Certs
     {
         static void Main(string[] args) //Environment.GetCommandLineArgs
         {
-            IRSA genCert = new RSA();
+            IGenerateRSAData genCert = new GenerateRSAData();
             var data = genCert.StrategyPattern();
             Console.WriteLine("e: "+data.E);
             Console.WriteLine("d: "+data.D);

@@ -6,11 +6,11 @@ namespace Certs
 {
     class FileIO
     {
-        public void WriteToDir(string name)
+        public void WriteToDir(string name, IEnumerable<string> data)
         {
 
         }
-        public void ReadFromDir(string name)
+        public IEnumerable<string> ReadFromDir(string name)
         {
 
         }

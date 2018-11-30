@@ -6,17 +6,19 @@ namespace Certs
 {
     class GenerateCert
     {
+        Certificate Cert;
         //sign
         //hash
-        //write
+        //write - one cert per file
         //read
-        //getchain
+        //getchain - build on chain as we create certs..if this cert has x chain next cert would x + 1 chain
         //verifychain
         //verifycert
         //modifycert
         //revokecert
-        //createrevocationlist
+        //createrevocationlist - one file with list of certs 
         //modifyrevocationlist
-        //
+        //probably more idk
+
     }
 }

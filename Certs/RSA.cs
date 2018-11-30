@@ -1,100 +1,35 @@
 ﻿using System;
-using System.Numerics;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 namespace Certs
-{
+{   
     interface IRSA
     {
-        RSAData StrategyPattern();
-        void GenerateP();
-        void GenerateQ();
-        void GenerateN();
-        void GenerateNTotient();
-        void GenerateDAndE();
+        BigInteger Encrypt(string message, BigInteger key, BigInteger q);
+        string Decrypt(BigInteger message, BigInteger key, BigInteger q);
     }
     class RSA : IRSA
     {
-        RandomBigPrimes Primes = new RandomBigPrimes();
-        RSAData nums = new RSAData();
-        public void GenerateNTotient()
+        public BigInteger Encrypt(string message, BigInteger key, BigInteger q)
         {
-            nums.NTosh = BigInteger.Multiply(BigInteger.Subtract(nums.P,1), BigInteger.Subtract(nums.Q, 1));
-        }
 
-        public void GenerateP()
-        {
-            nums.P = GetBigInteger();
         }
-        public void GenerateQ()
+        public string Decrypt(BigInteger message, BigInteger key, BigInteger q)
         {
-            nums.Q = GetBigInteger();
-        }
-        public void GenerateDAndE()
-        {
-            nums.E = GetBigInteger();
-            nums.D = ModInverse(nums.E, nums.NTosh);
-            while (!CheckRelativePrimality(nums.E, nums.D))
-            {
-                nums.E = GetBigInteger();
-                nums.D = ModInverse(nums.E, nums.NTosh);
-            }
-        }
 
-        public void GenerateN()
-        {
-            nums.N = BigInteger.Multiply(nums.P, nums.Q);
         }
-        private bool CheckRelativePrimality(BigInteger num, BigInteger num2)
+        private BigInteger ConvertStringToNumeric(string message)
         {
-            if (BigInteger.Remainder(num2, num) == 0 || BigInteger.Remainder(num, num2) == 0)
-                return false;
-            return true;
+            string asciiMessage = string.Empty;
+            for (int i = 0; i < message.Length; i++)
+                asciiMessage += ((int)message[i]).ToString();
+            return new BigInteger()
         }
-        private BigInteger GetBigInteger()
+        private string ConvertNumericToString(BigInteger num)
         {
-            return Primes.GetRandomPrime();
-        }
-        private BigInteger ModInverse(BigInteger a, BigInteger n)
-        {
-            BigInteger result;
-            BigInteger k = 1;
-            BigInteger temp, temp1;
-            while (true)
-            {
-                temp = BigInteger.Multiply(k, n);
-                temp1 = BigInteger.Add(1, temp);
-                result = BigInteger.Divide(temp1, a);
-                if (BigInteger.Remainder(result, 1) == 0) //integer
-                {
-                    return result;
-                }
-                else
-                {
-                    k++;
-                }
-            }
-        }
-        public RSAData StrategyPattern()
-        {
-            GenerateP();
-            GenerateQ();
-            GenerateN();
-            GenerateNTotient();
-            GenerateDAndE();
-            return nums;
-        }
-    }
 
-
-    class RSAData
-    {
-        public BigInteger N { get; set; }
-        public BigInteger E { get; set; }
-        public BigInteger D { get; set; }
-        public BigInteger NTosh { get; set; }
-        public BigInteger P { get; set; }
-        public BigInteger Q { get; set; }
+        }
     }
 }
