@@ -7,36 +7,64 @@ namespace Certs
 {   
     interface IRSA
     {
-        BigInteger Encrypt(string message, long key, BigInteger q);
-        string Decrypt(BigInteger message, long key, BigInteger q);
+        string Encrypt(string message, BigInteger key, BigInteger n);
+        string Decrypt(string message, BigInteger key, BigInteger n);
     }
     class RSA : IRSA
     {
-        public BigInteger Encrypt(string message, long key, BigInteger n)
+        public string Encrypt(string message, BigInteger key, BigInteger n)
         {
-            var num = ConvertStringToNumeric(message);
-            var inBetween = BigInteger.Pow(num, key);
-            return BigInteger.Remainder(inBetween, n);
+            BigInteger[] m = new BigInteger[message.Length];
+            string encryptMessage = string.Empty;
+            for(int i = 0; i<message.Length; i++)
+            {
+                m[i] = FastExponentiation(message[i], key, n);
+                encryptMessage += m[i].ToString().PadLeft(16,'0');
+            }
+            return encryptMessage;
         }
-        public string Decrypt(BigInteger message, long key, BigInteger n)
+
+        public string Decrypt(string message, BigInteger key, BigInteger n)
         {
-            var inBetween = BigInteger.Pow(message, int.Parse(key.ToString()));
-            var decryptedNum = BigInteger.Remainder(inBetween, n);
-            return ConvertNumericToString(decryptedNum);
+            BigInteger[] m = new BigInteger[message.Length];
+            string decrypt = string.Empty;
+            int count = 0;
+            while(count < message.Length -16)
+            {
+                m[count] = FastExponentiation(BigInteger.Parse(message.Substring(count,count +16)), key, n);
+                decrypt += m[count];
+                Console.WriteLine(m[count]);
+                count += 12;
+            }
+            return decrypt;
         }
-        private BigInteger ConvertStringToNumeric(string message)
+        private BigInteger FastExponentiation(BigInteger baseNum, BigInteger exponent, BigInteger mod)
         {
-            byte[] asciiBytes = Encoding.ASCII.GetBytes(message);
-            return new BigInteger(asciiBytes);
+            string exp = exponent.ToBinaryString();
+            BigInteger temp = baseNum;
+            for(int i = 1; i < exp.Length; i++)
+            {
+                BigInteger x = BigInteger.Multiply(temp, temp);
+               if (exp[i] == '1')
+                    x = BigInteger.Multiply(x, baseNum);
+                temp = BigInteger.Remainder(x, mod);
+                if (temp.ToString().Length > 20)
+                    Console.WriteLine("fuck");
+            }
+            return temp;
         }
-        private string ConvertNumericToString(BigInteger num)
-        {
-            Decoder d = Encoding.ASCII.GetDecoder();
-            var b = num.ToByteArray();
-            char[] str = new char[10000];
-            d.GetChars(b,str, true);
-//            d.GetChars(b, 0, b.Length, str, 0);
-            return new string(str);
-        }
+        //private byte[] ConvertStringToNumeric(string message)
+        //{
+        //    return Encoding.ASCII.GetBytes(message);
+        //}
+        //private string ConvertNumericToString(string num)
+        //{
+        //    //Decoder d = Encoding.ASCII.GetDecoder();
+        //    //char[] str = num.T
+        //    ////d.GetChars(b,str, true);
+        //    //d.GetChars(b, 0, b.Length, str, 0);
+        //    //return new string(str);
+        //    return Encoding.ASCII.GetString();
+        //}
     }
 }

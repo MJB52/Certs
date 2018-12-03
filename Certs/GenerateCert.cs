@@ -11,18 +11,18 @@ namespace Certs
         Certificate Cert;
         string CAName;
         Guid CAId;
-        long PrivKey;
-        BigInteger N;
+        int PrivKey;
+        int N;
         IRSA RSA = new RSA();
         FileIO file = new FileIO();
-        public GenerateCert(string caName, Guid id, long privKey, BigInteger n)
+        public GenerateCert(string caName, Guid id, int privKey, int n)
         {
             CAName = caName;
             CAId = id;
             PrivKey = privKey;
             N = n;
         }
-        public Certificate CertGenny(string user, long pubkey, BigInteger n, List<String> chain)
+        public Certificate CertGenny(string user, int pubkey, int n, List<String> chain)
         {
             CreateCert(user, pubkey, n, chain);
             HashCert();
@@ -30,7 +30,7 @@ namespace Certs
             WriteCert(user);
             return Cert;
         }
-        private void CreateCert(string user, long pubKey, BigInteger n, List<string> chain)
+        private void CreateCert(string user, int pubKey, int n, List<string> chain)
         {
             Cert = new Certificate{
                 Chain = chain,
@@ -57,7 +57,7 @@ namespace Certs
         }
         private void WriteCert(string user)
         {
-            string serializedCert = JsonConvert.SerializeObject(Cert);
+            string serializedCert = JsonConvert.SerializeObject(Cert);            
             //serialize cert again
             file.WriteToDir(user, serializedCert);
         }

@@ -12,6 +12,7 @@ namespace Certs
             IRSA rsa = new RSA();
             var e = rsa.Encrypt("HiIamMike", data.E, data.N); // doesnt work right now idfk
             Console.WriteLine(e.ToString());
+            Console.WriteLine();
             var d = rsa.Decrypt(e, data.D, data.N);
             Console.WriteLine(d);
         }

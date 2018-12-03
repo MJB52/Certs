@@ -91,10 +91,10 @@ namespace Certs
     class RSAData
     {
         public BigInteger N { get; set; }
-        public long E { get; set; }
-        public long D { get; set; }
+        public BigInteger E { get; set; }
+        public BigInteger D { get; set; }
         public BigInteger NTosh { get; set; }
-        public long P { get; set; }
-        public long Q { get; set; }
+        public BigInteger P { get; set; }
+        public BigInteger Q { get; set; }
     }
 }
