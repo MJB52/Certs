@@ -10,7 +10,7 @@ namespace Certs
         string Encrypt(string message, BigInteger key, BigInteger n);
         string Decrypt(string message, BigInteger key, BigInteger n);
     }
-    class RSA : IRSA
+    class RSA : IRSA //TODO since all we do is hash the output from sha256, we only have to worry about hex values..basically simplify this so it does rsa on the whole thing
     {
         public string Encrypt(string message, BigInteger key, BigInteger n)
         {
