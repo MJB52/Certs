@@ -48,7 +48,6 @@ namespace Certs
 
             string serializedJson = JsonConvert.SerializeObject(list);
             var reHash = Sha256.HashSha256(serializedJson);
-
             if (hash != reHash)
             {
                 Console.WriteLine("Revocation list was altered.");

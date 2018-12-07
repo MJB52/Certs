@@ -32,6 +32,7 @@ namespace Certs
         private void SendRequest(CertRequest request, string chosenCA)
         {
             filestuff.WriteToDir(chosenCA, request.Name, JsonConvert.SerializeObject(request), "CertRequest");
+            Console.WriteLine($"Cert request sent to {chosenCA}. ");
         }
     }
 }

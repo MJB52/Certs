@@ -112,8 +112,11 @@ namespace Certs
                     var fText = File.ReadAllText(thing);
                     var request = JsonConvert.DeserializeObject<CertRequest>(fText);
                     Console.WriteLine($"Request from {request.Name} to generate a certificate. Would you like to generate this cert? (y/n)");
-                    if(Console.ReadKey().KeyChar == 'y')
+                    if (Console.ReadKey().KeyChar == 'y')
+                    {
                         GenerateCert(request.Name, request.publicKey, request.N);
+                        File.Delete(thing);
+                    }
                 }
         }
     }
