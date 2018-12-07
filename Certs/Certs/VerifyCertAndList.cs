@@ -23,11 +23,6 @@ namespace Certs
                     return false;
                 }
 
-                if (DateTime.Today < cert.StartDate)
-                {
-                    Console.WriteLine($"Cert is not valid until {cert.StartDate}. ");
-                    return false;
-                }
                 if (DateTime.Today > cert.EndDate)
                 {
                     Console.WriteLine($"Cert expired on {cert.EndDate}. ");
