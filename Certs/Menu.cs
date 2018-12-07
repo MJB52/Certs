@@ -21,10 +21,18 @@ namespace Certs
             var choice = Console.ReadKey().KeyChar;
             if(choice == '1')
             {
-                //perform diffiehellman
+                DiffieHellmanMenu(name);
                 return;
             }
-            //performCertStuff
+            CertMenu(name);
+        }
+        private void DiffieHellmanMenu(string name)
+        {
+
+        }
+        private void CertMenu(string name)
+        {
+
         }
     }
 }
