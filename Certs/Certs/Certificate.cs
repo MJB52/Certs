@@ -11,6 +11,7 @@ namespace Certs
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string SubjectName { get; set; }
+        public string Algorithm = "RSA";
         public string PubKey { get; set; }
         public string N { get; set; }
         public Guid IssuerID { get; set; }
