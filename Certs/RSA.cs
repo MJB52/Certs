@@ -7,36 +7,25 @@ namespace Certs
 {   
     interface IRSA
     {
-        string Encrypt(string message, BigInteger key, BigInteger n);
-        string Decrypt(string message, BigInteger key, BigInteger n);
+        byte [] Encrypt(string message, BigInteger key, BigInteger n);
+        byte [] Decrypt(string message, BigInteger key, BigInteger n);
     }
     class RSA : IRSA //TODO since all we do is hash the output from sha256, we only have to worry about hex values..basically simplify this so it does rsa on the whole thing
     {
         System.Globalization.NumberStyles _num = System.Globalization.NumberStyles.HexNumber;
-        public string Encrypt(string message, BigInteger key, BigInteger n)
+        System.Security.Cryptography.RSA rsaInstance = System.Security.Cryptography.RSA.Create();
+        System.Security.Cryptography.RSAParameters rsaParams = new System.Security.Cryptography.RSAParameters();
+        public byte [] Encrypt(string message, BigInteger key, BigInteger n)
         {
-            var hexNum = BigInteger.Parse(message, _num);
-            return FastExponentiation(hexNum, key, n).ToString();
-            
+            //rsaParams.Exponent = key;
+            var result = Encoding.Unicode.GetBytes(message);
+            rsaInstance.ImportParameters(rsaParams);
+            return new byte[10];
         }
 
-        public string Decrypt(string message, BigInteger key, BigInteger n)
+        public byte [] Decrypt(string message, BigInteger key, BigInteger n)
         {
-            var hexNum = BigInteger.Parse(message, _num);
-            return FastExponentiation(hexNum, key, n).ToString();
-        }
-        private BigInteger FastExponentiation(BigInteger baseNum, BigInteger exponent, BigInteger mod)
-        {
-            string exp = exponent.ToBinaryString();
-            BigInteger temp = baseNum;
-            for(int i = 1; i < exp.Length; i++)
-            {
-               BigInteger x = BigInteger.Multiply(temp, temp);
-               if (exp[i] == '1')
-                    x = BigInteger.Multiply(x, baseNum);
-                temp = BigInteger.Remainder(x, mod);
-            }
-            return temp;
+            return new byte[10];
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Numerics;
 
 namespace Certs
@@ -11,11 +12,15 @@ namespace Certs
             var data = genCert.StrategyPattern();
             IRSA rsa = new RSA();
             var hash = Sha256.HashSha256("Hello World");
-            var e = rsa.Encrypt(hash, data.E, data.N); // doesnt work right now idfk
-            Console.WriteLine(e.ToString());
-            Console.WriteLine();
-            var d = rsa.Decrypt(e, data.D, data.N);
-            Console.WriteLine(d.ToString());
+            //var e = rsa.Encrypt(hash, data.E, data.N); // doesnt work right now idfk
+            //Console.WriteLine(e.ToString());
+            //Console.WriteLine();
+            //var d = rsa.Decrypt(e, data.D, data.N);
+            //Console.WriteLine(d.ToString());
         }
+    }
+    public class TestObj
+    {
+        public byte[] thing { get; set; }
     }
 }

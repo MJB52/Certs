@@ -20,6 +20,7 @@ namespace Certs
         RSAData nums = new RSAData();
         public void GenerateNTotient()
         {
+            
             nums.NTosh = BigInteger.Multiply(BigInteger.Subtract(nums.P, 1), BigInteger.Subtract(nums.Q, 1));
         }
 
@@ -34,12 +35,11 @@ namespace Certs
         public void GenerateDAndE()
         {
             nums.E = GetBigInteger();
-            nums.D = ModInverse(nums.E, nums.NTosh);
-            while (!CheckRelativePrimality(nums.E, nums.D))
+            while(!CheckRelativePrimality(nums.E, nums.NTosh))
             {
                 nums.E = GetBigInteger();
-                nums.D =ModInverse(nums.E, nums.NTosh);
             }
+            nums.D = ModInverse(nums.E, nums.NTosh);
         }
 
         public void GenerateN()
