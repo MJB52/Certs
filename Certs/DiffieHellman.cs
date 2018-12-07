@@ -82,7 +82,6 @@ namespace Certs
 
             Console.WriteLine("Diffie Hellman Completed");
             Console.ReadLine();
-
         }
 
         private void CheckRequest()
@@ -116,7 +115,7 @@ namespace Certs
         {
             var bS = Convert.ToString(p, 2);
             long temp = b;
-            for (int i = bS.Length - 2; i >= 0; i--)
+            for (int i = 1; i < bS.Length; i++)
             {
                 temp = temp * temp;
                 if (bS[i] == '1')
