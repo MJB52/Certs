@@ -8,24 +8,23 @@ namespace Certs
 {
     class DiffieHellman
     {
+        //Order of Contents in file
+        // Name
+        // q
+        // alpha
+        // private key
+        // public key
+        // shared key
         string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
         RandomBigPrimes Primes = new RandomBigPrimes();
         string user;
 
-        public DiffieHellman() //if another user initiates conversation
+        public DiffieHellman()
         {
             Console.Write("What is your name: ");
             user = Console.ReadLine();
 
             DisplayMenu();
-
-            //DHData DH = new DHData
-            //{
-            //    Q = q,
-            //    Alpha = alpha
-            //};
-
-
         }
 
         private void DisplayMenu()
@@ -45,8 +44,8 @@ namespace Certs
         {
             List<string> list = new List<string>();
 
-            var q = Primes.GetRandomPrime();
-            var alpha = Primes.GetRandomPrime();
+            var q = 18757;
+            var alpha = 6;
 
             Console.Write("Who would you like to share a key with: ");
             var name = Console.ReadLine();
@@ -54,10 +53,9 @@ namespace Certs
             list.Add(name);
             list.Add(q.ToString());
             list.Add(alpha.ToString());
-
-            var privateKey = 10;//Primes.GetRandomPrime();
-            var temp = Math.Pow(alpha, privateKey);
-            var publicKey = temp % q;
+            
+            var privateKey = Primes.GetRandomPrime();
+            var publicKey = FastExponent(alpha, privateKey, q);//temp % q;
 
             list.Add(privateKey.ToString());
             list.Add(publicKey.ToString());
@@ -66,13 +64,16 @@ namespace Certs
             Console.WriteLine("Key stored and ready for " + name);
             Console.ReadLine();
 
-            var lines = File.ReadAllLines(path + user + ".txt");
+            var lines = File.ReadAllLines(path + name + ".txt");
 
-            var shared = Math.Pow(Int32.Parse(lines[4]), privateKey);
-            shared = shared % q;
+            var shared = FastExponent(Int32.Parse(lines[4]), privateKey, q);
 
             list.Add(shared.ToString());
+            list[0] = user;
             File.WriteAllLines(path + user + ".txt", list);
+
+            Console.WriteLine("Diffie Hellman Completed");
+            Console.ReadLine();
 
         }
 
@@ -89,25 +90,32 @@ namespace Certs
             list.Add(alpha);
 
             var privateKey = Primes.GetRandomPrime();
-            var publicKey = Math.Pow(Int32.Parse(alpha), privateKey);
-            publicKey = publicKey % Int32.Parse(q);
+            var publicKey = FastExponent(Int32.Parse(alpha), privateKey, Int32.Parse(q));
+
             list.Add(privateKey.ToString());
             list.Add(publicKey.ToString());
 
-            var shared = Math.Pow(Int32.Parse(friendsPublicKey), privateKey);
-            shared = shared % Int32.Parse(q);
+            var shared = FastExponent(Int32.Parse(friendsPublicKey), privateKey, Int32.Parse(q));
             list.Add(shared.ToString());
 
             File.WriteAllLines(path + lines[0] + ".txt", list);
-        }
-    }
 
-    class DHData
-    {
-        public long PubKey { get; set; }
-        public long Q { get; set; }
-        public long PrivKey { get; set; }
-        public long Alpha { get; set; }
-        public long SharedKey { get; set; }
+            Console.WriteLine(user + "has completed the exchange");
+            Console.ReadLine();
+        }
+
+        public static long FastExponent(long b, long p, long m) //b^p%m=?
+        {
+            var bS = Convert.ToString(p, 2);
+            long temp = b;
+            for (int i = bS.Length - 2; i >= 0; i--)
+            {
+                temp = temp * temp;
+                if (bS[i] == '1')
+                    temp = temp * b;
+                temp = temp % m;
+            }
+            return temp;
+        }
     }
 }
