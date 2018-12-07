@@ -8,7 +8,7 @@ namespace Certs
     {
         CertController CC;
         FileIO fileStuff = new FileIO();
-        //need one menu for general stuff then another for more specific rsa shit
+        // Initial menu on startup
         public Menu()
         {
             Console.WriteLine("To start, if you have not used this program when you enter your name it " +
@@ -18,6 +18,7 @@ namespace Certs
         }
         private void BeginMenu()
         {
+            // Gives and reads in choices
             Console.WriteLine("Would you like to perform DiffieHellman(1) or work with PKI certs(2).");
             var choice = Console.ReadKey().KeyChar;
 
@@ -37,6 +38,7 @@ namespace Certs
         }
         private void CertMenu(string name = "")
         {
+            // Menu options for certs
             fileStuff = new FileIO();
             Console.WriteLine();
             if (string.IsNullOrWhiteSpace(name))
