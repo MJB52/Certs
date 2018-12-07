@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Certs
@@ -10,19 +11,50 @@ namespace Certs
     {
         string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Project2";
         string userPath;
-        Guid CAGuid = Guid.NewGuid();
+        Guid CAGuid;
         GenerateCert _generateCert;
         RequestCert _requestCert;
         VerifyCertAndList _verify;
         AddCertToRevList revList;
         FileIO fileStuff = new FileIO();
-        RSAData data = new GenerateRSAData().StrategyPattern();
+        RSAData data = new RSAData();
         string _userName;
         public CertController(string userName)
         {
             userPath = path +  $"\\{userName}";
             _userName = userName;
+            GetUserData();
         }
+
+        private void GetUserData()
+        {
+            var files = Directory.EnumerateFiles(userPath);
+            var found = files.FirstOrDefault(c => c.ToUpper().Contains("USERDATA"));
+            if (found != null)
+            {
+                var fText = File.ReadAllText(found);
+                var file = JsonConvert.DeserializeObject<UserData>(fText);
+                data.E = Convert.ToInt64(file.privKey);
+                data.D = Convert.ToInt64(file.pubKey);
+                data.N = Convert.ToInt64(file.N);
+            }
+            else
+            {
+                data = new GenerateRSAData().StrategyPattern();
+                var userData = new UserData
+                {
+                    CAGuid = Guid.NewGuid(),
+                    pubKey = data.D.ToString(),
+                    privKey = data.E.ToString(),
+                    N = data.N.ToString()
+                };
+                var serializedData = JsonConvert.SerializeObject(userData);
+                CAGuid = userData.CAGuid;
+                fileStuff.WriteToDir(_userName, serializedData, "UserData");
+            }
+        }
+            
+
         public void GenerateCert(string name, string pubKey, string n)
         {
             _generateCert = new GenerateCert(_userName, CAGuid, data.E.ToString(), data.N.ToString());
