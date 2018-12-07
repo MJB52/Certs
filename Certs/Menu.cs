@@ -14,17 +14,22 @@ namespace Certs
             Console.WriteLine("To start, if you have not used this program when you enter your name it " +
                               "will create a directory under your name. If you have used this program before " +
                               "please enter your name and it will resume use of your previous directory.");
+            BeginMenu();
         }
         private void BeginMenu()
         {
             Console.WriteLine("Would you like to perform DiffieHellman(1) or work with PKI certs(2).");
             var choice = Console.ReadKey().KeyChar;
-            if(choice == '1')
+
+            if (choice == '1')
             {
                 DiffieHellmanMenu();
                 return;
             }
-            CertMenu();
+            else if (choice == '2')
+                CertMenu();
+            else
+                BeginMenu();
         }
         private void DiffieHellmanMenu()
         {
@@ -32,6 +37,7 @@ namespace Certs
         }
         private void CertMenu(string name = "")
         {
+            Console.WriteLine();
             if (string.IsNullOrWhiteSpace(name))
             {
                 Console.Write("Please enter your name: ");
@@ -39,8 +45,9 @@ namespace Certs
             }
             CC = new CertController(name);
             fileStuff.CreateDir(name);
-            Console.WriteLine("1. Detect a Forged Cert\n2. Detect Revoked Cert\n3. Get a Cert\n4. Check Requests\n5. Quit");
+            Console.WriteLine("1. Detect a Forged Cert\n2. Detect Revoked Cert\n3. Get a Cert\n4. Check Requests\n5. Quit ");
             var choice = Console.ReadKey().KeyChar;
+            Console.WriteLine();
             switch (choice)
             {
                 case '1':

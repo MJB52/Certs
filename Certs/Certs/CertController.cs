@@ -14,6 +14,7 @@ namespace Certs
         GenerateCert _generateCert;
         RequestCert _requestCert;
         VerifyCertAndList _verify;
+        AddCertToRevList revList;
         FileIO fileStuff = new FileIO();
         RSAData data = new GenerateRSAData().StrategyPattern();
         string _userName;
@@ -30,14 +31,6 @@ namespace Certs
         }
         public void GetCert()
         {
-            var users = Directory.EnumerateDirectories(userPath);
-            Console.WriteLine("Here are a list of users you could go get a cert from: ");
-            foreach(var thing in users)
-            {
-                Console.WriteLine(thing);
-            }
-            Console.Write("Enter the name of the person you would like a cert from: ");
-            var choice = Console.ReadLine();
             _requestCert = new RequestCert(new CertRequest
             {
                 Name = _userName,
@@ -47,7 +40,18 @@ namespace Certs
         }
         public void VerifyRevList()
         {
+            _verify = new VerifyCertAndList();
+            var files = Directory.EnumerateFiles(userPath);
+            foreach (var thing in files)
+            {
+                if (thing.ToUpper().EndsWith("REVLIST.TXT"))
+                {
+                    var fText = File.ReadAllText(thing);
+                    var file = JsonConvert.DeserializeObject<RevocationList>(fText);
+                    _verify.VerifyRevList(file);
+                }
 
+            }
         }
         public void VerifyCert()
         {
@@ -56,7 +60,7 @@ namespace Certs
             List<string> certFiles = new List<string>();
             foreach (var thing in files)
             {
-                if (thing.ToUpper().Contains("CERT"))
+                if (thing.ToUpper().EndsWith("CERT.TXT"))
                     certFiles.Add(thing);
             }
             if (certFiles.Count != 0) {
@@ -73,7 +77,8 @@ namespace Certs
                     {
                         var fText = File.ReadAllText(thing);
                         var file = JsonConvert.DeserializeObject<Certificate>(fText);
-                        _verify.VerifyCert(file);
+                        if(!_verify.VerifyCert(file))
+                            revList = new AddCertToRevList(_userName, file);
                     }
                 else
                 {
@@ -81,8 +86,11 @@ namespace Certs
                     {
                         var fText = File.ReadAllText(thing);
                         var file = JsonConvert.DeserializeObject<Certificate>(fText);
-                        if(file.SubjectName.ToUpper() == choice.ToUpper())
-                            _verify.VerifyCert(file);
+                        if (file.SubjectName.ToUpper() == choice.ToUpper())
+                        {
+                            if (!_verify.VerifyCert(file))
+                                revList = new AddCertToRevList(_userName, file);
+                        }
                     }
                 }
                 
@@ -103,7 +111,9 @@ namespace Certs
                 {
                     var fText = File.ReadAllText(thing);
                     var request = JsonConvert.DeserializeObject<CertRequest>(fText);
-                    GenerateCert(request.Name, request.publicKey, request.N);
+                    Console.WriteLine($"Request from {request.Name} to generate a certificate. Would you like to generate this cert? (y/n)");
+                    if(Console.ReadKey().KeyChar == 'y')
+                        GenerateCert(request.Name, request.publicKey, request.N);
                 }
         }
     }

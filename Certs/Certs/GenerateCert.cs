@@ -24,8 +24,9 @@ namespace Certs
         {
             CreateCert(user, pubkey, n);
             HashCert();
-            SignCert();
-            WriteCert(user);
+            //SignCert();
+            WriteCert(user, "Cert");
+            WriteCert(CAName, $"{CAName}Generated{user}Cert");
             return Cert;
         }
         private void CreateCert(string user, string pubKey, string n)
@@ -53,11 +54,11 @@ namespace Certs
             var signed = RSA.Encrypt(Cert.SignedCert, Convert.ToInt64(PrivKey), Convert.ToInt64(N));
             Cert.SignedCert = signed.ToString();
         }
-        private void WriteCert(string user)
+        private void WriteCert(string user, string type)
         {
             string serializedCert = JsonConvert.SerializeObject(Cert);
             //serialize cert again
-            file.WriteToDir(user, serializedCert);
+            file.WriteToDir(user, serializedCert, type);
         }
         //read
         //verifychain

@@ -15,7 +15,12 @@ namespace Certs
         }
         public void WriteToDir(string name, string data, string writeType)
         {
-            string writePath = path + $"\\{name}{writeType}.txt";
+            string writePath = path + $"\\{name}\\{name}{writeType}.txt";
+            File.WriteAllText(writePath, data);
+        }
+        public void WriteToDir(string toName,string fromName, string data, string writeType)
+        {
+            string writePath = path + $"\\{toName}\\{fromName}{writeType}.txt";
             File.WriteAllText(writePath, data);
         }
         public void CreateDir(string name)
@@ -30,7 +35,13 @@ namespace Certs
 
         public bool CheckRequests(string name)
         {
-            throw new NotImplementedException();
+            var files = Directory.EnumerateFiles(path);
+            foreach(var thing in files)
+            {
+                if (thing.ToUpper().Contains("REQUEST"))
+                    return true;
+            }
+            return false;
         }
     }
 }
