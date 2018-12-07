@@ -6,6 +6,7 @@ namespace Certs
 {
     class Sha256
     {
+        /****************************** MACROS ******************************/
         static void DBL_INT_ADD(ref uint a, ref uint b, uint c)
         {
             if (a > 0xffffffff - c) ++b; a += c;
@@ -21,11 +22,13 @@ namespace Certs
             return (((a) >> (b)) | ((a) << (32 - (b))));
         }
 
+        //Choose
         static uint CH(uint x, uint y, uint z)
         {
             return (((x) & (y)) ^ (~(x) & (z)));
         }
 
+        //Majority
         static uint MAJ(uint x, uint y, uint z)
         {
             return (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)));
@@ -59,6 +62,7 @@ namespace Certs
             public uint[] state;
         }
 
+        /**************************** VARIABLES *****************************/
         static uint[] k = {
                         0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
                         0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
@@ -114,6 +118,7 @@ namespace Certs
             ctx.state[7] += h;
         }
 
+        //Initialize
         static void SHA256Init(ref SHA256_CTX ctx)
         {
             ctx.datalen = 0;
@@ -149,6 +154,7 @@ namespace Certs
         {
             uint i = ctx.datalen;
 
+            // Pad whatever data is left in the buffer.
             if (ctx.datalen < 56)
             {
                 ctx.data[i++] = 0x80;
@@ -166,6 +172,7 @@ namespace Certs
                 SHA256Transform(ref ctx, ctx.data);
             }
 
+            // Append to the padding the total message's length in bits and transform.
             DBL_INT_ADD(ref ctx.bitlen[0], ref ctx.bitlen[1], ctx.datalen * 8);
             ctx.data[63] = (byte)(ctx.bitlen[0]);
             ctx.data[62] = (byte)(ctx.bitlen[0] >> 8);
@@ -177,6 +184,8 @@ namespace Certs
             ctx.data[56] = (byte)(ctx.bitlen[1] >> 24);
             SHA256Transform(ref ctx, ctx.data);
 
+            // Since this implementation uses little endian byte ordering and SHA uses big endian,
+            // reverse all the bytes when copying the final state to the output hash.
             for (i = 0; i < 4; ++i)
             {
                 hash[i] = (byte)(((ctx.state[0]) >> (int)(24 - i * 8)) & 0x000000ff);
