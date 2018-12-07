@@ -6,7 +6,6 @@ namespace Certs
 {
     class Certificate
     {
-        public List<string> Chain { get; set; }
         public Guid CertID { get; set; }
         public string IssuerName { get; set; }
         public DateTime StartDate { get; set; }

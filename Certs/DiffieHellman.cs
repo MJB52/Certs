@@ -8,7 +8,7 @@ namespace Certs
 {
     class DiffieHellman
     {
-        string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
+        string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Project2\\";
         RandomBigPrimes Primes = new RandomBigPrimes();
         string user;
 

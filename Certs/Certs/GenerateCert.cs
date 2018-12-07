@@ -9,37 +9,36 @@ namespace Certs
         Certificate Cert;
         string CAName;
         Guid CAId;
-        int PrivKey;
-        int N;
+        string PrivKey;
+        string N;
         IRSA RSA = new RSA();
         FileIO file = new FileIO();
-        public GenerateCert(string caName, Guid id, int privKey, int n)
+        public GenerateCert(string caName, Guid id, string CAkey, string CAN)
         {
             CAName = caName;
             CAId = id;
-            PrivKey = privKey;
-            N = n;
+            PrivKey = CAkey;
+            N = CAN;
         }
-        public Certificate CertGenny(string user, int pubkey, int n, List<String> chain)
+        public Certificate CertGenny(string user, string pubkey, string n)
         {
-            CreateCert(user, pubkey, n, chain);
+            CreateCert(user, pubkey, n);
             HashCert();
             SignCert();
             WriteCert(user);
             return Cert;
         }
-        private void CreateCert(string user, int pubKey, int n, List<string> chain)
+        private void CreateCert(string user, string pubKey, string n)
         {
             Cert = new Certificate
             {
-                Chain = chain,
                 CertID = Guid.NewGuid(),
                 IssuerName = CAName,
                 StartDate = DateTime.Today,
                 EndDate = DateTime.Today.AddHours(4),
                 SubjectName = user,
-                PubKey = pubKey.ToString(),
-                N = n.ToString(),
+                PubKey = pubKey,
+                N = n,
                 IssuerID = CAId
             };
         }
@@ -51,7 +50,7 @@ namespace Certs
         }
         private void SignCert()
         {
-            var signed = RSA.Encrypt(Cert.SignedCert, PrivKey, N);
+            var signed = RSA.Encrypt(Cert.SignedCert, Convert.ToInt64(PrivKey), Convert.ToInt64(N));
             Cert.SignedCert = signed.ToString();
         }
         private void WriteCert(string user)
