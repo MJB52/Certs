@@ -15,8 +15,8 @@ namespace Certs
                 rsa.PersistKeyInCsp = false;
                 return new RSAData
                 {
-                    publicKey = rsa.ExportParameters(false),
-                    privateKey = rsa.ExportParameters(true)
+                    publicKey = rsa.ExportParameters(true),
+                    privateKey = rsa.ExportParameters(false)
                 };
             }
         }

@@ -56,7 +56,7 @@ namespace Certs
 
         public void GenerateCert(string name, RSAParameters pubKey)
         {
-            _generateCert = new GenerateCert(_userName, CAGuid, pubKey);
+            _generateCert = new GenerateCert(_userName, CAGuid, data.privateKey);
             var temp = _generateCert.CertGenny(name, pubKey);
             fileStuff.WriteToDir(name, JsonConvert.SerializeObject(temp), "Cert");
         }

@@ -16,7 +16,6 @@ namespace Certs
                 decrypted = rsa.Decrypt(input, true);
             }
             return Encoding.UTF8.GetString(decrypted);
-
         }
 
         public static byte[] Encrypt(byte[] input, RSAParameters publicKey)

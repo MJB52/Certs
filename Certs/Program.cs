@@ -10,7 +10,6 @@ namespace Certs
     {
         static void Main(string[] args) //Environment.GetCommandLineArgs
         {
-
             var menu = new Menu();
         }
     }
