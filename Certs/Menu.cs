@@ -46,7 +46,8 @@ namespace Certs
             }
             CC = new CertController(name);
             fileStuff.CreateDir(name);
-            Console.WriteLine("1. Detect a Forged Cert\n2. Detect Forged Rev List\n3. Get a Cert\n4. Check Requests \n5. Quit ");
+            CC.GetUserData();
+            Console.WriteLine("1. Detect a Forged Cert\n2. Detect Forged Rev List\n3. Get a Cert\n4. Check Requests \n5. Logout \n6. Quit ");
             var choice = Console.ReadKey().KeyChar;
             Console.WriteLine();
             switch (choice)
@@ -75,6 +76,11 @@ namespace Certs
                         break;
                     }
                 case '5':
+                    {
+                        BeginMenu();
+                        break;
+                    }
+                case '6':
                     {
                         Environment.Exit(0);
                         break;

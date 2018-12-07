@@ -23,10 +23,9 @@ namespace Certs
         {
             userPath = path +  $"\\{userName}";
             _userName = userName;
-            GetUserData();
         }
 
-        private void GetUserData()
+        public void GetUserData()
         {
             var files = Directory.EnumerateFiles(userPath);
             var found = files.FirstOrDefault(c => c.ToUpper().Contains("USERDATA"));
