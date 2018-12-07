@@ -34,11 +34,11 @@ namespace Certs
         public void GenerateDAndE()
         {
             nums.E = GetBigInteger();
-            nums.D = (long)ModInverse(nums.E, nums.NTosh);
+            nums.D = ModInverse(nums.E, nums.NTosh);
             while (!CheckRelativePrimality(nums.E, nums.D))
             {
                 nums.E = GetBigInteger();
-                nums.D =(long) ModInverse(nums.E, nums.NTosh);
+                nums.D =ModInverse(nums.E, nums.NTosh);
             }
         }
 
@@ -72,7 +72,7 @@ namespace Certs
                 }
                 else
                 {
-                    k++;
+                    k = BigInteger.Add(1, k);
                 }
             }
         }

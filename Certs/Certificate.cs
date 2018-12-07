@@ -15,6 +15,6 @@ namespace Certs
         public string PubKey { get; set; }
         public string N { get; set; }
         public Guid IssuerID { get; set; }
-        public string SignedCert { get; set; }
+        public string SignedCert { get; set; } = string.Empty;
     }
 }

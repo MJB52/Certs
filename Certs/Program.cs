@@ -10,11 +10,12 @@ namespace Certs
             IGenerateRSAData genCert = new GenerateRSAData();
             var data = genCert.StrategyPattern();
             IRSA rsa = new RSA();
-            var e = rsa.Encrypt("HiIamMike", data.E, data.N); // doesnt work right now idfk
+            var hash = Sha256.HashSha256("Hello World");
+            var e = rsa.Encrypt(hash, data.E, data.N); // doesnt work right now idfk
             Console.WriteLine(e.ToString());
             Console.WriteLine();
             var d = rsa.Decrypt(e, data.D, data.N);
-            Console.WriteLine(d);
+            Console.WriteLine(d.ToString());
         }
     }
 }

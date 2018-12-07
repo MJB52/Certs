@@ -47,7 +47,7 @@ namespace Certs
         private void HashCert()
         {
             string serializedJson = JsonConvert.SerializeObject(Cert);
-            var hash = Sha256Algo.Hash(serializedJson);
+            var hash = Sha256.HashSha256(serializedJson); //need to encrypt 
             Cert.SignedCert = hash;
         }
         private void SignCert()
@@ -57,9 +57,24 @@ namespace Certs
         }
         private void WriteCert(string user)
         {
-            string serializedCert = JsonConvert.SerializeObject(Cert);            
+            string serializedCert = JsonConvert.SerializeObject(Cert);
             //serialize cert again
             file.WriteToDir(user, serializedCert);
+        }
+        public void VerifyCert(string serializedCert)
+        {
+            var thing = JsonConvert.DeserializeObject<Certificate>(serializedCert);
+            var hash = thing.SignedCert;
+            thing.SignedCert = string.Empty;
+
+            string serializedJson = JsonConvert.SerializeObject(thing);
+            var reHash = Sha256.HashSha256(serializedJson);
+
+            if (reHash == hash)
+                Console.WriteLine("GoodShit");
+            else
+                Console.WriteLine("nah");
+            Cert.SignedCert = reHash;
         }
         //read
         //getchain - build on chain as we create certs..if this cert has x chain next cert would x + 1 chain
