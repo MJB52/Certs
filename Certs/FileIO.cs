@@ -15,7 +15,7 @@ namespace Certs
         }
         public void WriteToDir(string name, string data, string writeType)
         {
-            string writePath = path + $"\\{name}{writeType}";
+            string writePath = path + $"\\{name}{writeType}.txt";
             File.WriteAllText(writePath, data);
         }
         public void CreateDir(string name)
