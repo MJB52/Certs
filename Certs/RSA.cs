@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Text;
 
@@ -7,55 +8,60 @@ namespace Certs
 {   
     interface IRSA
     {
-        string Encrypt(string message, BigInteger key, BigInteger n);
-        string Decrypt(string message, BigInteger key, BigInteger n);
+        string Encrypt(string message, long key, long n);
+        string Decrypt(string message, long key, long n);
     }
     class RSA : IRSA //TODO since all we do is hash the output from sha256, we only have to worry about hex values..basically simplify this so it does rsa on the whole thing
     {
-        public string Decrypt(string message, BigInteger key, BigInteger n)
+        public string Decrypt(string message, long key, long n)
         {
-            char[] ar = message.ToCharArray();
-            int i = 0, j = 0;
-            string c = "", dc = "";
-            try
+            message = message.Substring(10);
+            char[] ar = message.Substring(0, message.Length - 2).ToCharArray();
+            int[] newAr = new int[ar.Length];
+            for (int i = 0; i < newAr.Length; i++)
+                newAr[i] = Convert.ToInt32(ar[i].ToString(), 16);
+            String m = "";
+            for (int i = 0; i < newAr.Length; i++)
             {
-                for (; i < ar.Length; i++)
-                {
-                    c = "";
-                    for (j = i; ar[j] != '-'; j++)
-                        c = c + ar[j];
-                    i = j;
-                    int xx = Convert.ToInt16(c);
-                    dc = dc + ((char)BigMod(xx, key, n)).ToString();
-                }
+                m += FastExponent(newAr[i], key, n);
             }
-            catch (Exception ex) { }
-            return dc;
+            return m;
+
         }
 
-        public string Encrypt(string message, BigInteger key, BigInteger n)
+        public string Encrypt(string message, long key, long n)
         {
             string hex = message;
             char[] ar = hex.ToCharArray();
-            String c = "";
+            int[] newAr = new int[ar.Length];
             for (int i = 0; i < ar.Length; i++)
+                newAr[i] = Convert.ToInt32(ar[i].ToString(),16);
+            String c = "";
+            for (int i = 0; i < newAr.Length; i++)
             {
-                if (c == "")
-                    c = c + BigMod(ar[i], key, n);
-                else
-                    c = c + "-" + BigMod(ar[i], key, n);
+               c += FastExponent(newAr[i], key, n);
             }
             return c;
         }
 
-        public static BigInteger BigMod(BigInteger b, BigInteger p, BigInteger m) //b^p%m=?
+        public static long FastExponent(long b, long p, long m) //b^p%m=?
         {
-            if (p == 0)
-                return 1;
-            else if (p % 2 == 0)
-                return BigInteger.Pow(BigMod(b, p / 2, m),2) % m;
-            else
-                return ((b % m) * BigMod(b, p - 1, m)) % m;
+            var bS = Convert.ToString(p, 2);
+            long temp = b;
+            for(int i = bS.Length - 2; i >= 0; i--)
+            {
+                temp = temp * temp;
+                if (bS[i] == '1')
+                    temp = temp * b;
+                temp = temp % m;
+            }
+            return temp;
+            //if (p == 0)
+            //    return 1;
+            //else if (p % 2 == 0)
+            //    return BigInteger.Pow(BigMod(b, p / 2, m),2) % m;
+            //else
+            //    return ((b % m) * BigMod(b, p - 1, m)) % m;
         }
     }
 }
