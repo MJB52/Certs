@@ -56,12 +56,6 @@ namespace Certs
                 temp = temp % m;
             }
             return temp;
-            //if (p == 0)
-            //    return 1;
-            //else if (p % 2 == 0)
-            //    return BigInteger.Pow(BigMod(b, p / 2, m),2) % m;
-            //else
-            //    return ((b % m) * BigMod(b, p - 1, m)) % m;
         }
     }
 }
