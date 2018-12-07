@@ -7,13 +7,12 @@ namespace Certs
 {
     class VerifyCertAndList
     {
-        public void VerifyCert(string serializedCert)
+        public void VerifyCert(Certificate cert)
         {
-            var thing = JsonConvert.DeserializeObject<Certificate>(serializedCert);
-            var hash = thing.SignedCert;
-            thing.SignedCert = string.Empty;
+            var hash = cert.SignedCert;
+            cert.SignedCert = string.Empty;
 
-            string serializedJson = JsonConvert.SerializeObject(thing);
+            string serializedJson = JsonConvert.SerializeObject(cert);
             var reHash = Sha256.HashSha256(serializedJson);
 
             if (reHash == hash)

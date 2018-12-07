@@ -15,7 +15,7 @@ namespace Certs
         // private key
         // public key
         // shared key
-        string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
+        string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Project2\\";
         RandomBigPrimes Primes = new RandomBigPrimes();
         string user;
 
