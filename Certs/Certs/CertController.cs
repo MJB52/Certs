@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Certs
@@ -33,19 +34,18 @@ namespace Certs
             {
                 var fText = File.ReadAllText(found);
                 var file = JsonConvert.DeserializeObject<UserData>(fText);
-                data.E = Convert.ToInt64(file.privKey);
-                data.D = Convert.ToInt64(file.pubKey);
-                data.N = Convert.ToInt64(file.N);
+                data.publicKey = file.pubKey;
+                data.privateKey = file.privKey;
+                CAGuid = file.CAGuid;
             }
             else
             {
-                data = new GenerateRSAData().StrategyPattern();
+                data = new GenerateRSAData().generateKeys();
                 var userData = new UserData
                 {
                     CAGuid = Guid.NewGuid(),
-                    pubKey = data.D.ToString(),
-                    privKey = data.E.ToString(),
-                    N = data.N.ToString()
+                    pubKey = data.publicKey,
+                    privKey = data.privateKey
                 };
                 var serializedData = JsonConvert.SerializeObject(userData);
                 CAGuid = userData.CAGuid;
@@ -54,10 +54,10 @@ namespace Certs
         }
             
 
-        public void GenerateCert(string name, string pubKey, string n)
+        public void GenerateCert(string name, RSAParameters pubKey)
         {
-            _generateCert = new GenerateCert(_userName, CAGuid, data.E.ToString(), data.N.ToString());
-            var temp = _generateCert.CertGenny(name, pubKey, n);
+            _generateCert = new GenerateCert(_userName, CAGuid, pubKey);
+            var temp = _generateCert.CertGenny(name, pubKey);
             fileStuff.WriteToDir(name, JsonConvert.SerializeObject(temp), "Cert");
         }
         public void GetCert()
@@ -65,8 +65,7 @@ namespace Certs
             _requestCert = new RequestCert(new CertRequest
             {
                 Name = _userName,
-                publicKey = data.D.ToString(),
-                N = data.N.ToString()
+                publicKey = data.publicKey
             });
         }
         public void VerifyRevList()
@@ -79,11 +78,14 @@ namespace Certs
                 {
                     var fText = File.ReadAllText(thing);
                     var file = JsonConvert.DeserializeObject<RevocationList>(fText);
-                    _verify.VerifyRevList(file);
+                    if (_verify.VerifyRevList(file))
+                        Console.WriteLine("List was not mutated in anyway");
                 }
 
             }
         }
+
+
         public void VerifyCert()
         {
             _verify = new VerifyCertAndList();
@@ -108,8 +110,10 @@ namespace Certs
                     {
                         var fText = File.ReadAllText(thing);
                         var file = JsonConvert.DeserializeObject<Certificate>(fText);
-                        if(!_verify.VerifyCert(file))
+                        if (!_verify.VerifyCert(file, data.publicKey))
                             revList = new AddCertToRevList(_userName, file);
+                        else
+                            Console.WriteLine($"{file.CertID} is still valid. ");
                     }
                 else
                 {
@@ -119,8 +123,10 @@ namespace Certs
                         var file = JsonConvert.DeserializeObject<Certificate>(fText);
                         if (file.SubjectName.ToUpper() == choice.ToUpper())
                         {
-                            if (!_verify.VerifyCert(file))
+                            if (!_verify.VerifyCert(file, data.publicKey))
                                 revList = new AddCertToRevList(_userName, file);
+                            else
+                                Console.WriteLine($"{file.CertID} is still valid. ");
                         }
                     }
                 }
@@ -145,7 +151,7 @@ namespace Certs
                     Console.WriteLine($"Request from {request.Name} to generate a certificate. Would you like to generate this cert? (y/n)");
                     if (Console.ReadKey().KeyChar == 'y')
                     {
-                        GenerateCert(request.Name, request.publicKey, request.N);
+                        GenerateCert(request.Name, request.publicKey);
                         File.Delete(thing);
                     }
                 }

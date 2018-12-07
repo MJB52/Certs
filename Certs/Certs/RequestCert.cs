@@ -17,7 +17,9 @@ namespace Certs
             Console.WriteLine("Here are a list of users you could go get a cert from: ");
             foreach (var thing in users)
             {
-                Console.WriteLine(thing.Substring(thing.LastIndexOf('\\') + 1));
+                var actualName = thing.Substring(thing.LastIndexOf('\\') + 1);
+                if (actualName.ToUpper().Trim() != request.Name.ToUpper().Trim())
+                    Console.WriteLine(actualName);
             }
             string found = null;
             string choice = null;

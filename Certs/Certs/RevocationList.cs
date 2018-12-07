@@ -11,7 +11,7 @@ namespace Certs
         public DateTime LastUpdated { get; set; }
         public DateTime NextUpdate { get; set; }
         public List<RevokedCert> RevList { get; set; } = new List<RevokedCert>();
-        public string SignedHash { get; set; }
+        public string SignedHash { get; set; } = string.Empty;
     }
     class RevokedCert
     {

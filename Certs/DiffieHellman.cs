@@ -21,6 +21,7 @@ namespace Certs
 
         public DiffieHellman()
         {
+            Console.WriteLine();
             Console.Write("What is your name: ");
             user = Console.ReadLine();
 
@@ -46,7 +47,14 @@ namespace Certs
 
             var q = 18757;
             var alpha = 6;
-
+            var names = Directory.EnumerateDirectories(path);
+            Console.WriteLine("Here are a list of users you could start a DH key exchange with: ");
+            foreach (var thing in names)
+            {
+                var actualName = thing.Substring(thing.LastIndexOf('\\') + 1);
+                if (actualName.ToUpper().Trim() != user.ToUpper().Trim())
+                    Console.WriteLine(actualName);
+            }
             Console.Write("Who would you like to share a key with: ");
             var name = Console.ReadLine();
 
@@ -60,17 +68,17 @@ namespace Certs
             list.Add(privateKey.ToString());
             list.Add(publicKey.ToString());
 
-            File.WriteAllLines(path + name + ".txt", list);
+            File.WriteAllLines(path + "//" + name + "//" + name + "DH.txt", list);
             Console.WriteLine("Key stored and ready for " + name);
             Console.ReadLine();
 
-            var lines = File.ReadAllLines(path + name + ".txt");
+            var lines = File.ReadAllLines(path + "//" + name + "//" + name + "DH.txt");
 
             var shared = FastExponent(Int32.Parse(lines[4]), privateKey, q);
 
             list.Add(shared.ToString());
             list[0] = user;
-            File.WriteAllLines(path + user + ".txt", list);
+            File.WriteAllLines(path + "//" + user + "//" + user + "DH.txt", list);
 
             Console.WriteLine("Diffie Hellman Completed");
             Console.ReadLine();
@@ -80,7 +88,7 @@ namespace Certs
         private void CheckRequest()
         {
             List<string> list = new List<string>();
-            var lines = File.ReadAllLines(path + user + ".txt");
+            var lines = File.ReadAllLines(path + "//" + user + "//" + user + "DH.txt");
             list.Add(user);
 
             var q = lines[1];
@@ -98,9 +106,9 @@ namespace Certs
             var shared = FastExponent(Int32.Parse(friendsPublicKey), privateKey, Int32.Parse(q));
             list.Add(shared.ToString());
 
-            File.WriteAllLines(path + lines[0] + ".txt", list);
+            File.WriteAllLines(path + "//" + lines[0] + "//" + lines[0] + "DH.txt", list);
 
-            Console.WriteLine(user + "has completed the exchange");
+            Console.WriteLine(user + " has completed the exchange");
             Console.ReadLine();
         }
 

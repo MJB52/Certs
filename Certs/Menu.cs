@@ -47,7 +47,8 @@ namespace Certs
             CC = new CertController(name);
             fileStuff.CreateDir(name);
             CC.GetUserData();
-            Console.WriteLine("1. Detect a Forged Cert\n2. Detect Forged Rev List\n3. Get a Cert\n4. Check Requests \n5. Logout \n6. Quit ");
+            Console.WriteLine("1. Detect a Forged Cert\n2. Detect Forged Rev List\n3. Get a Cert\n4. Check Requests" +
+                "\n5. Logout \n6. Quit ");
             var choice = Console.ReadKey().KeyChar;
             Console.WriteLine();
             switch (choice)

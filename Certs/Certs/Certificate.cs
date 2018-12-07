@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Certs
@@ -12,9 +13,8 @@ namespace Certs
         public DateTime EndDate { get; set; }
         public string SubjectName { get; set; }
         public string Algorithm = "RSA";
-        public string PubKey { get; set; }
-        public string N { get; set; }
+        public RSAParameters PubKey { get; set; }
         public Guid IssuerID { get; set; }
-        public string SignedCert { get; set; } = string.Empty;
+        public byte [] SignedCert { get; set; } = null;
     }
 }

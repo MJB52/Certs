@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Certs
 {
@@ -9,27 +11,23 @@ namespace Certs
         Certificate Cert;
         string CAName;
         Guid CAId;
-        string PrivKey;
-        string N;
-        IRSA RSA = new RSA();
+        RSAParameters PrivKey;
         FileIO file = new FileIO();
-        public GenerateCert(string caName, Guid id, string CAkey, string CAN)
+        public GenerateCert(string caName, Guid id, RSAParameters CAkey)
         {
             CAName = caName;
             CAId = id;
             PrivKey = CAkey;
-            N = CAN;
         }
-        public Certificate CertGenny(string user, string pubkey, string n)
+        public Certificate CertGenny(string user, RSAParameters pubkey)
         {
-            CreateCert(user, pubkey, n);
+            CreateCert(user, pubkey);
             HashCert();
-            //SignCert();
             WriteCert(user, "Cert");
             WriteCert(CAName, $"{CAName}Generated{user}Cert");
             return Cert;
         }
-        private void CreateCert(string user, string pubKey, string n)
+        private void CreateCert(string user, RSAParameters pubKey)
         {
             Cert = new Certificate
             {
@@ -39,7 +37,6 @@ namespace Certs
                 EndDate = DateTime.Today.AddHours(4),
                 SubjectName = user,
                 PubKey = pubKey,
-                N = n,
                 IssuerID = CAId
             };
         }
@@ -47,12 +44,7 @@ namespace Certs
         {
             string serializedJson = JsonConvert.SerializeObject(Cert);
             var hash = Sha256.HashSha256(serializedJson); //need to encrypt 
-            Cert.SignedCert = hash;
-        }
-        private void SignCert()
-        {
-            var signed = RSA.Encrypt(Cert.SignedCert, Convert.ToInt64(PrivKey), Convert.ToInt64(N));
-            Cert.SignedCert = signed.ToString();
+            Cert.SignedCert = RSA.Encrypt(Encoding.UTF8.GetBytes(hash), PrivKey);
         }
         private void WriteCert(string user, string type)
         {
