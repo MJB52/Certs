@@ -8,11 +8,7 @@ namespace Certs
     class FileIO
     {
         string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Project2";
-
-        public void WriteToDir(string name, IEnumerable<string> data)
-        {
-
-        }
+        //Different data to enter into directories
         public void WriteToDir(string name, string data, string writeType)
         {
             string writePath = path + $"\\{name}\\{name}{writeType}.txt";
@@ -28,11 +24,12 @@ namespace Certs
             path += $"\\{name}";
             System.IO.Directory.CreateDirectory(path);
         }
+        // Reads info from directory
         public object ReadFromDir(string name)
         {
             return new object();
         }
-
+        // Checks if any requests have been made in the directory
         public bool CheckRequests(string name)
         {
             var files = Directory.EnumerateFiles(path);

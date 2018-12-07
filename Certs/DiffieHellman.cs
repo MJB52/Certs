@@ -35,6 +35,7 @@ namespace Certs
             Console.Write("Select Request: ");
             var request = Console.ReadLine();
 
+            // User Choice
             if (request == "1")
                 MakeRequest();
             else if (request == "2")
@@ -43,10 +44,12 @@ namespace Certs
 
         private void MakeRequest()
         {
+            // Created Storage for items
             List<string> list = new List<string>();
 
             var q = 18757;
             var alpha = 6;
+            // Read Names
             var names = Directory.EnumerateDirectories(path);
             Console.WriteLine("Here are a list of users you could start a DH key exchange with: ");
             foreach (var thing in names)
@@ -58,10 +61,12 @@ namespace Certs
             Console.Write("Who would you like to share a key with: ");
             var name = Console.ReadLine();
 
+            // Start adding items to be stored in the file
             list.Add(name);
             list.Add(q.ToString());
             list.Add(alpha.ToString());
             
+            // Generate Keys
             var privateKey = Primes.GetRandomPrime();
             var publicKey = FastExponent(alpha, privateKey, q);//temp % q;
 
@@ -72,12 +77,14 @@ namespace Certs
             Console.WriteLine("Key stored and ready for " + name);
             Console.ReadLine();
 
+            // Read info from other user
             var lines = File.ReadAllLines(path + "//" + name + "//" + name + "DH.txt");
-
+            //Calculate shared key
             var shared = FastExponent(Int32.Parse(lines[4]), privateKey, q);
 
             list.Add(shared.ToString());
             list[0] = user;
+            // Rewrite all lines to original user
             File.WriteAllLines(path + "//" + user + "//" + user + "DH.txt", list);
 
             Console.WriteLine("Diffie Hellman Completed");
@@ -86,7 +93,9 @@ namespace Certs
 
         private void CheckRequest()
         {
+            // Same style data
             List<string> list = new List<string>();
+            // Reads info from original user and stores values into variables
             var lines = File.ReadAllLines(path + "//" + user + "//" + user + "DH.txt");
             list.Add(user);
 
@@ -95,7 +104,8 @@ namespace Certs
             var friendsPublicKey = lines[4];
             list.Add(q);
             list.Add(alpha);
-
+            
+            // Generate Keys
             var privateKey = Primes.GetRandomPrime();
             var publicKey = FastExponent(Int32.Parse(alpha), privateKey, Int32.Parse(q));
 
