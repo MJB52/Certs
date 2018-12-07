@@ -17,22 +17,22 @@ namespace Certs
             Console.WriteLine("Here are a list of users you could go get a cert from: ");
             foreach (var thing in users)
             {
-                Console.WriteLine(thing);
+                Console.WriteLine(thing.Substring(thing.LastIndexOf('\\') + 1));
             }
-            Console.Write("Enter the name of the person you would like a cert from: ");
-            var choice = Console.ReadLine();
-            var found = users.FirstOrDefault(c => c.ToLower() == choice.ToLower());
+            string found = null;
+            string choice = null;
             while (found == null)
             {
-                Console.WriteLine("Would you like to get a cert from any of these folks");
+                Console.Write("Enter the name of the person you would like a cert from: ");
                 choice = Console.ReadLine();
-                found = users.FirstOrDefault(c => c.ToLower() == choice.ToLower());
+                found = users.FirstOrDefault(c => c.Substring(c.LastIndexOf('\\')+1).ToLower() == choice.ToLower());
             }
             SendRequest(request, choice);
         }
         private void SendRequest(CertRequest request, string chosenCA)
         {
-            filestuff.WriteToDir(chosenCA, JsonConvert.SerializeObject(request), "CertRequest");
+            filestuff.WriteToDir(chosenCA, request.Name, JsonConvert.SerializeObject(request), "CertRequest");
+            Console.WriteLine($"Cert request sent to {chosenCA}. ");
         }
     }
 }
