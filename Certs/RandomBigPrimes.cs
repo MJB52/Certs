@@ -7,7 +7,7 @@ namespace Certs
 {
     class RandomBigPrimes
     {
-        readonly List<long> PrimeList = new List<long>
+        readonly List<long> PrimeList = new List<long> //lookup table..primes from http://compoasso.free.fr/primelistweb/page/prime/liste_online_en.php
         {   17377,   17383,   17387,   17389,   17393,   17401,   17417,   17419,   17431,   17443,
             17449,   17467,   17471,   17477,   17483,   17489,   17491,   17497,   17509,   17519,
             17539,   17551,   17569,   17573,   17579,   17581,   17597,   17599,   17609,   17623,

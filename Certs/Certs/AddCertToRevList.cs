@@ -7,6 +7,9 @@ using System.Text;
 
 namespace Certs
 {
+    /// <summary>
+    /// at this point a cert has been proven to be not trust worthy so it is added to the revlist
+    /// </summary>
     class AddCertToRevList
     {
         string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Project2";
@@ -31,7 +34,7 @@ namespace Certs
             }
             var text = File.ReadAllText(found);
             var revList = JsonConvert.DeserializeObject<RevocationList>(text);
-            var revCert = new RevokedCert
+            var revCert = new RevokedCert //for revokation list we only need these fields
             {
                 SubjectName = badCert.SubjectName,
                 RevocationDate = DateTime.Today,
@@ -72,7 +75,7 @@ namespace Certs
                 NextUpdate = DateTime.Today.AddDays(1),
             };
             var hashed = Sha256.HashSha256(JsonConvert.SerializeObject(revList));
-            revList.SignedHash = hashed;
+            revList.SignedHash = hashed; //hash revlist
 
             var data = JsonConvert.SerializeObject(revList);
             file.WriteToDir(_userName, data, "RevList");

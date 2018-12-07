@@ -12,9 +12,9 @@ namespace Certs
         {
             try
             {
-                var hash = RSA.Decrypt(cert.SignedCert, pubKey);
+                var hash = RSA.Decrypt(cert.SignedCert, pubKey); //decrypt hash to compare
                 cert.SignedCert = null;
-                string serializedJson = JsonConvert.SerializeObject(cert);
+                string serializedJson = JsonConvert.SerializeObject(cert);  //rehash
 
                 var reHash = Sha256.HashSha256(serializedJson);
 

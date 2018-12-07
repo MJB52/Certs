@@ -13,13 +13,13 @@ namespace Certs
         Guid CAId;
         RSAParameters PrivKey;
         FileIO file = new FileIO();
-        public GenerateCert(string caName, Guid id, RSAParameters CAkey)
+        public GenerateCert(string caName, Guid id, RSAParameters CAkey) //sets the CA's data
         {
             CAName = caName;
             CAId = id;
             PrivKey = CAkey;
         }
-        public Certificate CertGenny(string user, RSAParameters pubkey)
+        public Certificate CertGenny(string user, RSAParameters pubkey) //actually generates the cert and returns it back to be passed to users dir
         {
             CreateCert(user, pubkey);
             HashCert();
@@ -27,7 +27,7 @@ namespace Certs
             WriteCert(CAName, $"{CAName}Generated{user}Cert");
             return Cert;
         }
-        private void CreateCert(string user, RSAParameters pubKey)
+        private void CreateCert(string user, RSAParameters pubKey) //basically a cert constructor
         {
             Cert = new Certificate
             {
@@ -40,10 +40,10 @@ namespace Certs
                 IssuerID = CAId
             };
         }
-        private void HashCert()
+        private void HashCert() //
         {
             string serializedJson = JsonConvert.SerializeObject(Cert);
-            var hash = Sha256.HashSha256(serializedJson); //need to encrypt 
+            var hash = Sha256.HashSha256(serializedJson);
             Cert.SignedCert = RSA.Encrypt(Encoding.UTF8.GetBytes(hash), PrivKey);
         }
         private void WriteCert(string user, string type)
@@ -52,14 +52,5 @@ namespace Certs
             //serialize cert again
             file.WriteToDir(user, serializedCert, type);
         }
-        //read
-        //verifychain
-        //verifycert
-        //modifycert
-        //revokecert
-        //createrevocationlist - one file with list of certs or maybe just certIds 
-        //modifyrevocationlist
-        //probably more idk
-
     }
 }

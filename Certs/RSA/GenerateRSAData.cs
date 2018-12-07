@@ -8,9 +8,10 @@ namespace Certs
 {
     class GenerateRSAData
     {
+        //generates keys by using a call to the system
         public RSAData generateKeys()
         {
-            using (var rsa = new RSACryptoServiceProvider(2048))
+            using (var rsa = new RSACryptoServiceProvider(2048)) //opens up a stream
             {
                 rsa.PersistKeyInCsp = false;
                 return new RSAData
@@ -22,7 +23,7 @@ namespace Certs
         }
     }
 
-
+    //model for keeping track of rsaData
     class RSAData
     {
         public RSAParameters publicKey;

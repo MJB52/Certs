@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Certs
 {
+    //simply 2 models for storing dat
     class RevocationList
     {
         public string IssuerName { get; set; }

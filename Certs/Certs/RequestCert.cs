@@ -11,6 +11,7 @@ namespace Certs
     {
         string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Project2";
         FileIO filestuff = new FileIO();
+        //puts a request in a specific users inbox
         public RequestCert(CertRequest request)
         {
             var users = Directory.EnumerateDirectories(path);
@@ -23,7 +24,7 @@ namespace Certs
             }
             string found = null;
             string choice = null;
-            while (found == null)
+            while (found == null) //ensures a user is actually selected
             {
                 Console.Write("Enter the name of the person you would like a cert from: ");
                 choice = Console.ReadLine();

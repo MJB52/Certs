@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Certs
 {
+    //Model for a certificate
     class Certificate
     {
         public Guid CertID { get; set; }

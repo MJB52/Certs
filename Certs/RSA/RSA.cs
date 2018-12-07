@@ -9,7 +9,7 @@ namespace Certs
         public static string Decrypt(byte[] input, RSAParameters privateKey)
         {
             byte[] decrypted;
-            using (var rsa = new RSACryptoServiceProvider(2048))
+            using (var rsa = new RSACryptoServiceProvider(2048)) //open up a stream to encrypt hash
             {
                 rsa.PersistKeyInCsp = false;
                 rsa.ImportParameters(privateKey);

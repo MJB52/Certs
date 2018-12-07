@@ -8,8 +8,12 @@ using System.Text;
 
 namespace Certs
 {
+    /// <summary>
+    /// This class is basically a factory for all things that have to do with certs
+    /// </summary>
     class CertController
     {
+        //members
         string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Project2";
         string userPath;
         Guid CAGuid;
@@ -20,12 +24,13 @@ namespace Certs
         FileIO fileStuff = new FileIO();
         RSAData data = new RSAData();
         string _userName;
+        //sets the username of whoever is controlling the cert stuff
         public CertController(string userName)
         {
             userPath = path +  $"\\{userName}";
             _userName = userName;
         }
-
+        //reads user data file for the pub key and id
         public void GetUserData()
         {
             var files = Directory.EnumerateFiles(userPath);
@@ -38,7 +43,7 @@ namespace Certs
                 data.privateKey = file.privKey;
                 CAGuid = file.CAGuid;
             }
-            else
+            else //create a new userdata if there isnt one
             {
                 data = new GenerateRSAData().generateKeys();
                 var userData = new UserData
@@ -53,13 +58,14 @@ namespace Certs
             }
         }
             
-
+        //Makes the call to generate the cert
         public void GenerateCert(string name, RSAParameters pubKey)
         {
             _generateCert = new GenerateCert(_userName, CAGuid, data.privateKey);
             var temp = _generateCert.CertGenny(name, pubKey);
             fileStuff.WriteToDir(name, JsonConvert.SerializeObject(temp), "Cert");
         }
+        //makes call to request a cert
         public void GetCert()
         {
             _requestCert = new RequestCert(new CertRequest
@@ -68,6 +74,7 @@ namespace Certs
                 publicKey = data.publicKey
             });
         }
+        //makes call to verifyrevocationlist
         public void VerifyRevList()
         {
             _verify = new VerifyCertAndList();

@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Certs
 {
+    //model for userData
     public class UserData
     {
         public Guid CAGuid { get; set; }

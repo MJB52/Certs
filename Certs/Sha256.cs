@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Certs
 {
+    /// <summary>
+    /// ALL CREDIT GOES HERE: https://www.programmingalgorithms.com/algorithm/sha256?lang=C%23
+    /// </summary>
     class Sha256
     {
         /****************************** MACROS ******************************/
