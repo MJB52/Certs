@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Certs
 {
-    static class Sha256
+    class Sha256
     {
         static void DBL_INT_ADD(ref uint a, ref uint b, uint c)
         {

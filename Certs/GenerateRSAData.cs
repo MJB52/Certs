@@ -20,7 +20,7 @@ namespace Certs
         RSAData nums = new RSAData();
         public void GenerateNTotient()
         {
-            nums.NTosh = BigInteger.Multiply(BigInteger.Subtract(nums.P, 1), BigInteger.Subtract(nums.Q, 1));
+            nums.NTosh = (nums.P - 1) * (nums.Q - 1);
         }
 
         public void GenerateP()
@@ -34,21 +34,20 @@ namespace Certs
         public void GenerateDAndE()
         {
             nums.E = GetBigInteger();
-            nums.D = ModInverse(nums.E, nums.NTosh);
-            while (!CheckRelativePrimality(nums.E, nums.D))
+            while(!CheckRelativePrimality(nums.E, nums.NTosh))
             {
                 nums.E = GetBigInteger();
-                nums.D =ModInverse(nums.E, nums.NTosh);
             }
+            nums.D = ModInverse(nums.E, nums.NTosh);
         }
 
         public void GenerateN()
         {
-            nums.N = BigInteger.Multiply(nums.P, nums.Q);
+            nums.N = nums.P * nums.Q;
         }
-        private bool CheckRelativePrimality(BigInteger num, BigInteger num2)
+        private bool CheckRelativePrimality(BigInteger num, long num2)
         {
-            if (BigInteger.Remainder(num2, num) == 0 || BigInteger.Remainder(num, num2) == 0)
+            if (num2 % num == 0 || num % num2 == 0)
                 return false;
             return true;
         }
@@ -56,23 +55,23 @@ namespace Certs
         {
             return Primes.GetRandomPrime();
         }
-        private BigInteger ModInverse(BigInteger a, BigInteger n)
+        private long ModInverse(long a, long n)
         {
-            BigInteger result;
-            BigInteger k = 1;
-            BigInteger temp, temp1;
+            long result;
+            long k = 1;
+            long temp;
             while (true)
             {
-                temp = BigInteger.Multiply(k, n);
-                temp1 = BigInteger.Add(1, temp);
-                result = BigInteger.Divide(temp1, a);
-                if (BigInteger.Remainder(result, 1) == 0) //integer
+                temp = k * n;
+                temp++;
+                result = temp / a;
+                if (result % 1 == 0) //integer
                 {
                     return result;
                 }
                 else
                 {
-                    k = BigInteger.Add(1, k);
+                    k++;
                 }
             }
         }
@@ -90,11 +89,11 @@ namespace Certs
 
     class RSAData
     {
-        public BigInteger N { get; set; }
-        public BigInteger E { get; set; }
-        public BigInteger D { get; set; }
-        public BigInteger NTosh { get; set; }
-        public BigInteger P { get; set; }
-        public BigInteger Q { get; set; }
+        public long N { get; set; }
+        public long E { get; set; }
+        public long D { get; set; }
+        public long NTosh { get; set; }
+        public long P { get; set; }
+        public long Q { get; set; }
     }
 }
